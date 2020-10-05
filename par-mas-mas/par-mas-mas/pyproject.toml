@@ -1,0 +1,49 @@
+[tool.briefcase]
+project_name = "par-mas-mas"
+bundle = "com.example"
+version = "0.0.1"
+url = "https://example.com/par-mas-mas"
+license = "BSD license"
+author = 'Martha Arnaud & Alicia Cisneros'
+author_email = "aliciacisnerosm@gmail.com"
+
+[tool.briefcase.app.par-mas-mas]
+formal_name = "par-mas-mas"
+description = "Proyecto compiladores"
+icon = "src/par_mas_mas/resources/par-mas-mas"
+sources = ['src/par_mas_mas']
+requires = []
+
+
+[tool.briefcase.app.par-mas-mas.macOS]
+requires = [
+    'toga-cocoa>=0.3.0.dev20',
+]
+
+[tool.briefcase.app.par-mas-mas.linux]
+requires = [
+    'toga-gtk>=0.3.0.dev20',
+]
+system_requires = [
+    'libgirepository1.0-dev',
+    'libcairo2-dev',
+    'libpango1.0-dev',
+    'libwebkitgtk-3.0-0',
+    'gir1.2-webkit-3.0',
+]
+
+[tool.briefcase.app.par-mas-mas.windows]
+requires = [
+    'toga-winforms>=0.3.0.dev20',
+]
+
+# Mobile deployments
+[tool.briefcase.app.par-mas-mas.iOS]
+requires = [
+    'toga-iOS>=0.3.0.dev20',
+]
+
+[tool.briefcase.app.par-mas-mas.android]
+requires = [
+    'toga-android>=0.3.0.dev20',
+]

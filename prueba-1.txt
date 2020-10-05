@@ -1,0 +1,40 @@
+program prueba :
+var int: a, b[0][10],c[0] & char: d & float: f, g & int : x;
+
+int func prueba(int a, char t){
+    var int: variablelocal, va23[4] & char: o9;
+    read(a, ab);
+    write("hola", variablelocal);
+    x = 9;
+}
+
+void func shala(){
+  var int: x;
+  write("hola", "muchas",  5 + 8);
+  if(4 < 5 or 6 > 5 and (7 <> 0 and 7 > 9)) then {
+    read(a, b);
+  };
+
+  if ((7 > 9)) then {
+    write("asas");
+  } else {
+    read(a);
+  };
+
+
+  while((8 == 0) or 8 == 9)do {
+    read(a);
+  };
+  for(x = 5 to 5) do {
+      write("hola");
+  };
+}
+
+main (){
+  read(p);
+  vd shala();
+  x = prueba(a,b);
+  for (i = 0 to 9) do {
+    write("prueba");
+  };
+}
