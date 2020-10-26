@@ -52,6 +52,8 @@ t_DIVIDE = r'\/'
 t_GREATER_THAN = r'\>'
 t_LESS_THAN = r'\<'
 t_DIFFERENT = r'\<>'
+t_GREATER_EQUAL = r'\>='
+t_LESS_EQUAL = r'\<='
 t_EQUAL = r'\=='
 t_ignore = ' \t'
 t_MORE = r'\&'
@@ -188,6 +190,8 @@ def p_relacionales(p):
                   | GREATER_THAN
                   | DIFFERENT
                   | EQUAL
+                  | GREATER_EQUAL 
+                  | LESS_EQUAL
   '''
 
 def p_estatutos(p):

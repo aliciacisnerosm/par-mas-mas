@@ -9,278 +9,347 @@ cubo = {
   }
 }
 
+int = 1
+float = 2
+char = 3
+bool = 4
+error = 5
+
 '''
-cubo_semantico = {
-  'int':{
-    '+':{
-      'int':'int',
-      'float': 'float',
-      'char':'error',
-      'bool':'error'
-    },
-    '-':{
-      'int':'int',
-      'float': 'float',
-      'char':'error',
-      'bool':'error'
-    },
-    '*':{
-      'int':'int',
-      'float': 'float',
-      'char':'error',
-      'bool':'error'
-    },
-    '/':{
-      'int':'float',
-      'float':'float',
-      'char':'error',
-      'bool':'error'
-    },
-    '>':{
-      'int':'bool',
-      'float':'bool',
-      'char':'error',
-      'bool':'error'
-    },
-    '<':{
-      'int':'bool',
-      'float':'bool',
-      'char':'error',
-      'bool':'error'
-    },
-    '<>':{
-      'int': 'bool',
-      'float':'error',
-      'char': 'error',
-      'bool': 'error'
-    },
-    '==': {
-      'int': 'bool',
-      'float': 'error',
-      'char': 'error',
-      'bool': 'error'
-    },
-    'and': {
-      'int': 'error',
-      'float': 'error',
-      'char': 'error',
-      'bool': 'error'
-    },
-    'or': {
-      'int': 'error',
-      'float': 'error',
-      'char': 'error',
-      'bool': 'error'
-    },
-    '=': {
-      'int': 'int',
-      'float': 'error',
-      'char': 'error',
-      'bool': 'error'
-    },
-  },
-  'float':{
-    '+':{
-      'int':'float',
-      'float': 'float',
-      'char':'error',
-      'bool':'error'
-    },
-    '-':{
-      'int':'float',
-      'float': 'float',
-      'char':'error',
-      'bool':'error'
-    },
-    '*':{
-      'int':'float',
-      'float': 'float',
-      'char':'error',
-      'bool':'error'
-    },
-    '/':{
-      'int':'float',
-      'float':'float',
-      'char':'error',
-      'bool':'error'
-    },
-    '>':{
-      'int':'bool',
-      'float':'bool',
-      'char':'error',
-      'bool':'error'
-    },
-    '<':{
-      'int':'bool',
-      'float':'bool',
-      'char':'error',
-      'bool':'error'
-    },
-    '<>':{
-      'int': 'error',
-      'float':'bool',
-      'char': 'error',
-      'bool': 'error'
-    },
-    '==': {
-      'int': 'error',
-      'float': 'bool',
-      'char': 'error',
-      'bool': 'error'
-    },
-    'and': {
-      'int': 'error',
-      'float': 'error',
-      'char': 'error',
-      'bool': 'error'
-    },
-    'or': {
-      'int': 'error',
-      'float': 'error',
-      'char': 'error',
-      'bool': 'error'
-    },
-    '=': {
-      'int': 'error',
-      'float': 'float',
-      'char': 'error',
-      'bool': 'error'
-    }, 
-  },
- 'char':{
-    '+':{
-      'int':'error',
-      'float':'error',
-      'char':'error',
-      'bool':'error'
-    },
-    '-':{
-      'int':'error',
-      'float':'error',
-      'char':'error',
-      'bool':'error'
-    },
-    '*':{
-      'int':'error',
-      'float':'error',
-      'char':'error',
-      'bool':'error'
-    },
-    '/':{
-      'int':'error',
-      'float':'error',
-      'char':'error',
-      'bool':'error'
-    },
-    '>':{
-      'int':'error',
-      'float':'error',
-      'char':'error',
-      'bool':'error'
-    },
-    '>':{
-      'int':'error',
-      'float':'error',
-      'char':'error',
-      'bool':'error'
-    },
-    '<>':{
-      'int': 'error',
-      'float':'error',
-      'char': 'bool',
-      'bool': 'error'
-    },
-    '==': {
-      'int': 'error',
-      'float': 'error',
-      'char': 'bool',
-      'bool': 'error'
-    },
-    'and': {
-      'int': 'error',
-      'float': 'error',
-      'char': 'error',
-      'bool': 'error'
-    },
-    'or': {
-      'int': 'error',
-      'float': 'error',
-      'char': 'error',
-      'bool': 'error'
-    },
-    '=': {
-      'int': 'error',
-      'float': 'error',
-      'char': 'char',
-      'bool': 'error'
-    }, 
-  },
-   'bool':{
-    '+':{
-      'int':'error',
-      'float': 'error',
-      'char':'error',
-      'bool':'error'
-    },
-    '-':{
-      'int':'error',
-      'float': 'error',
-      'char':'error',
-      'bool':'error'
-    },
-    '*':{
-      'int':'error',
-      'float': 'error',
-      'char':'error',
-      'bool':'error'
-    },
-    '/':{
-      'int':'error',
-      'float':'error',
-      'char':'error',
-      'bool':'error'
-    },
-    '>':{
-      'int':'error',
-      'float':'error',
-      'char':'error',
-      'bool':'error'
-    },
-    '>':{
-      'int':'error',
-      'float':'error',
-      'char':'error',
-      'bool':'error'
-    },
-    '<>':{
-      'int': 'error',
-      'float':'error',
-      'char': 'error',
-      'bool': 'bool'
-    },
-    '==': {
-      'int': 'error',
-      'float': 'error',
-      'char': 'error',
-      'bool': 'bool'
-    },
-    'and': {
-      'int': 'error',
-      'float': 'error',
-      'char': 'error',
-      'bool': 'bool'
-    },
-    'or': {
-      'int': 'error',
-      'float': 'error',
-      'char': 'error',
-      'bool': 'bool'
-    },
-    '=': {
-      'int': 'error',
-      'float': 'error',
-      'char': 'error',
-      'bool': 'error'
-    }, 
-  },
-}
+class SemanticCube:
+  def __init__(self):
+    self.semantic_cube = {
+      1: {
+        '+': {
+          1: 1,
+          2: 2,
+          3: 5,
+          4: 5
+        },
+        '-': {
+          1: 1,
+          2: 2,
+          3: 5,
+          4: 5
+        },
+        '*': {
+          1: 1,
+          2: 2,
+          3: 5,
+          4: 5
+        },
+        '/': {
+          1: 2,
+          2: 2,
+          3: 5,
+          4: 5
+        },
+        '>': {
+          1: 4,
+          2: 4,
+          3: 5,
+          4: 5
+        },
+        '<': {
+          1: 4,
+          2: 4,
+          3: 5,
+          4: 5
+        },
+        '<>': {
+          1: 4,
+          2: 5,
+          3: 5,
+          4: 5
+        },
+        '>=': {
+          1: 4,
+          2: 4,
+          3: 5,
+          4: 5
+        },
+        '<=': {
+          1: 4,
+          2: 4,
+          3: 5,
+          4: 5
+        },
+        '==': {
+          1: 4,
+          2: 5,
+          3: 5,
+          4: 5
+        },
+        'and': {
+          1: 5,
+          2: 5,
+          3: 5,
+          4: 5
+        },
+        'or': {
+          1: 5,
+          2: 5,
+          3: 5,
+          4: 5
+        },
+        '=': {
+          1: 1,
+          2: 5,
+          3: 5,
+          4: 5
+        },
+      },
+      2:{
+        '+':{
+          1: 2,
+          2: 2,
+          3: 5,
+          4: 5
+        },
+        '-':{
+          1: 2,
+          2: 2,
+          3: 5,
+          4: 5
+        },
+        '*':{
+          1: 2,
+          2: 2,
+          3: 5,
+          4: 5
+        },
+        '/':{
+          1: 2,
+          2: 2,
+          3: 5,
+          4: 5
+        },
+        '>':{
+          1: 4,
+          2: 4,
+          3: 5,
+          4: 5
+        },
+        '<':{
+          1: 4,
+          2: 4,
+          3: 5,
+          4: 5
+        },
+        '>=':{
+          1: 4,
+          2: 4,
+          3: 5,
+          4: 5
+        },
+        '<=':{
+          1: 4,
+          2: 4,
+          3: 5,
+          4: 5
+        },
+        '<>':{
+          1: 5,
+          2: 4,
+          3: 5,
+          4: 5
+        },
+        '==': {
+          1: 5,
+          2: 4,
+          3: 5,
+          4: 5
+        },
+        'and': {
+          1: 5,
+          2: 5,
+          3: 5,
+          4: 5
+        },
+        'or': {
+          1: 5,
+          2: 5,
+          3: 5,
+          4: 5
+        },
+        '=': {
+          1: 5,
+          2: 2,
+          3: 5,
+          4: 5
+        }, 
+      },
+    3:{
+        '+':{
+          1: 5,
+          2: 5,
+          3: 5,
+          4: 5
+        },
+        '-':{
+          1: 5,
+          2: 5,
+          3: 5,
+          4: 5
+        },
+        '*':{
+          1: 5,
+          2: 5,
+          3: 5,
+          4: 5
+        },
+        '/':{
+          1: 5,
+          2: 5,
+          3: 5,
+          4: 5
+        },
+        '>':{
+          1: 5,
+          2: 5,
+          3: 5,
+          4: 5
+        },
+        '<':{
+          1: 5,
+          2: 5,
+          3: 5,
+          4: 5
+        },
+        '>=':{
+          1: 5,
+          2: 5,
+          3: 5,
+          4: 5
+        },
+        '<=':{
+          1: 5,
+          2: 5,
+          3: 5,
+          4: 5
+        },
+        '<>':{
+          1: 5,
+          2: 5,
+          3: 4,
+          4: 5
+        },
+        '==': {
+          1: 5,
+          2: 5,
+          3: 4,
+          4: 5
+        },
+        'and': {
+          1: 5,
+          2: 5,
+          3: 5,
+          4: 5
+        },
+        'or': {
+          1: 5,
+          2: 5,
+          3: 5,
+          4: 5
+        },
+        '=': {
+          1: 5,
+          2: 5,
+          3: 3,
+          4: 5
+        }, 
+      },
+      4:{
+        '+':{
+          1: 5,
+          2: 5,
+          3: 5,
+          4: 5
+        },
+        '-':{
+          1: 5,
+          2: 5,
+          3: 5,
+          4: 5
+        },
+        '*':{
+          1: 5,
+          2: 5,
+          3: 5,
+          4: 5
+        },
+        '/':{
+          1: 5,
+          2: 5,
+          3: 5,
+          4: 5
+        },
+        '>':{
+          1: 5,
+          2: 5,
+          3: 5,
+          4: 5
+        },
+        '<':{
+          1: 5,
+          2: 5,
+          3: 5,
+          4: 5
+        },
+        '>=':{
+          1: 5,
+          2: 5,
+          3: 5,
+          4: 5
+        },
+        '<=':{
+          1: 5,
+          2: 5,
+          3: 5,
+          4: 5
+        },
+        '<>':{
+          1: 5,
+          2: 5,
+          3: 5,
+          4: 4
+        },
+        '==': {
+          1: 5,
+          2: 5,
+          3: 5,
+          4: 4
+        },
+        'and': {
+          1: 5,
+          2: 5,
+          3: 5,
+          4: 4
+        },
+        'or': {
+          1: 5,
+          2: 5,
+          3: 5,
+          4: 4
+        },
+        '=': {
+          1: 5,
+          2: 5,
+          3: 5,
+          4: 5
+        }, 
+      },
+    }
+
+  def get_type(self, left, right, oper):
+    return self.semantic_cube[left][oper][right]
+
+
+# def main():
+#   cs = SemanticCube()
+#   print(cs.get_values(1, 1, '>='))
+#   print(cs.get_values(1, 2, '<='))
+#   print(cs.get_values(1, 4, '>='))  
+
+# if __name__=='__main__':
+#    main()

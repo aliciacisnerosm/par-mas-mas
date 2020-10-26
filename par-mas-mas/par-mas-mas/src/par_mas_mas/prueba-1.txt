@@ -1,40 +1,26 @@
 program prueba :
-var int: a, b[0][10],c[0] & char: d & float: f, g & int : x;
+var int: aglobal, b[0][10],c[0] & char: d & int: x & char: ap & char: appp, b1, m & float: variablefloat;
 
 int func prueba(int a, char t){
     var int: variablelocal, va23[4] & char: o9;
-    read(a, ab);
-    write("hola", variablelocal);
-    x = 9;
+    read(aglobal);
+    read(appp);
+    write("hola", 9);
+    variablefloat = 1234.909;
+    aglobal = 9 - 12;
+    aglobal = 9 + 10;
+    aglobal = 11 / 10;
+    aglobal = 9 * 10;
 }
 
 void func shala(){
   var int: x;
-  write("hola", "muchas",  5 + 8);
-  if(4 < 5 or 6 > 5 and (7 <> 0 and 7 > 9)) then {
-    read(a, b);
-  };
-
-  if ((7 > 9)) then {
-    write("asas");
-  } else {
-    read(a);
-  };
-
-
-  while((8 == 0) or 8 == 9)do {
-    read(a);
-  };
-  for(x = 5 to 5) do {
-      write("hola");
-  };
+  write("hola", 9,  5 + 9.7);
+  read(aglobal, b);
 }
 
 main (){
-  read(p);
+  read(m);
   vd shala();
   x = prueba(a,b);
-  for (i = 0 to 9) do {
-    write("prueba");
-  };
 }
