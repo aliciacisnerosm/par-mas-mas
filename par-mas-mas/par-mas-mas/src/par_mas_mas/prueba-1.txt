@@ -5,7 +5,7 @@ int func prueba(int a, char t){
     var int: variablelocal, va23[4] & char: o9;
     read(aglobal);
     read(appp);
-    write("hola", 9);
+    write("hola", 2309231);
     variablefloat = 1234.909;
     aglobal = 9 - 12;
     aglobal = 9 + 10;
@@ -15,12 +15,10 @@ int func prueba(int a, char t){
 
 void func shala(){
   var int: x;
-  write("hola", 9,  5 + 9.7);
+  write("hola", "hola 2",  5 * 9.7);
   read(aglobal, b);
 }
 
 main (){
   read(m);
-  vd shala();
-  x = prueba(a,b);
 }

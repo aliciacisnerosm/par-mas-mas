@@ -25,6 +25,13 @@ class Memory:
 				'float': 12000,
 				'char': 13000,
 				'bool': 14000
+			},
+			#direcciones para constantes
+			#solo aqui hay string para poner letreros para estatuto escritura, checar para agregar nuevo tipo...
+			'global_constant':{
+				'int' : 15000,
+				'float': 16000,
+				'char' : 17000
 			}
 		}
 #TO DO: HANDLE ERRORS
@@ -136,7 +143,38 @@ class Memory:
 			return "error"
 
 ###########################################
+#global constantes
+	def add_int_constante(self):
+		if self.memory['global_constant']['int'] < 16000:
+				self.memory['global_constant']['int'] += 1
+				return self.memory['global_constant']['int']
+		else:
+			return "error"
+	
+	def add_float_constante(self):
+		if self.memory['global_constant']['float'] < 17000:
+			self.memory['global_constant']['float'] += 1
+			return self.memory['global_constant']['float']
+		else:
+			return "error"
 
+	def add_char_constante(self):
+		if self.memory['global_constant']['char'] < 18000:
+			self.memory['global_constant']['char'] += 1
+			return self.memory['global_constant']['char']
+		else:
+			return "error"
+		#checar este	
+	def add_string_constante(self):
+		if self.memory['global_constant']['string'] < 19000:
+			self.memory['global_constant']['string'] += 1
+			return self.memory['global_constant']['string']
+		else:
+			return "error"
+		
+		
+
+##########################################
 	def reset_dir_local(self):
 		self.memory['dir_local'] = {
 			'int': 8000,
@@ -159,9 +197,12 @@ class Memory:
 			'char': 6000,
 			'bool': 7000
 		}
+#falta get value_memory de las constantes
 
-	def get_value_memory(self, return_type, scope, temp):
+	def get_value_memory(self, return_type, scope, temp, const):
 		if return_type == 1:
+			if const:
+				return self.add_int_constante()
 			if scope == "global":
 				if temp == True:
 					return self.add_int_temp()
@@ -172,8 +213,11 @@ class Memory:
 					return self.add_int_local()
 				else:
 					return self.add_int_local_temp()
+			
 
 		elif return_type == 2:
+			if const:
+				return self.add_float_constante()
 			if scope == "global":
 				if temp == True:
 					return self.add_float_temp()
@@ -185,6 +229,8 @@ class Memory:
 				else:
 					return self.add_float_local_temp()
 		elif return_type == 3:
+			if const:
+				return self.add_char_constante()
 			if scope == "global":
 				if temp == True:
 					return self.add_char_temp()
@@ -198,9 +244,7 @@ class Memory:
 					
 		elif return_type == 4:
 			if scope == "global":
-			# 	return "error"
-			# else:
-				if temp == True:
+				if temp:
 					return self.add_bool_temp()
 				else:
 					return self.add_bool_local_temp()

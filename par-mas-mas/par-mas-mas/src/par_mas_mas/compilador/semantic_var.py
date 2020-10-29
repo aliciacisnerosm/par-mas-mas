@@ -8,6 +8,9 @@ class Semantics:
 					'variables': {
 						'var_name': set(),
 					},
+					'types':{
+						'param_types':[],
+					},
 				}
 			},
 	}
@@ -74,6 +77,7 @@ class Semantics:
 						return self._global['functions'][scope]['variables'][i]['memory_dir']
 
 	# agrega variables temporales
+
 	def add_variables(self, return_type, scope, kind, name, value, memory_dir, dimension):
 		if scope == 'global':
 			self._global['global_var'][memory_dir] = {
@@ -95,12 +99,33 @@ class Semantics:
 					'memory_dir': memory_dir,
 					'dimension': dimension
 				}
+		print("se registro existosamente:", value)
+
+	def add_constant_variables(self, return_type, scope, kind, value, memory_dir, dimension):
+		self._global['global_var'][memory_dir] = {
+				'return_type': return_type,
+				'scope': scope,
+				'kind': kind,
+				'value': value,
+				'memory_dir': memory_dir,
+				'dimension': dimension,
+				'name': None				
+			}
+
+	#agrega tipos de dato para parametros de funciones
+	def add_parameter_type(self,scope,return_type):
+		if scope != 'global':
+			self._global['types']={
+				['param_types'].append(return_type)
+			}
+
 
 	def get_variables_sets(self, scope):
 		if scope == "global":
 			return self._global['global_var']['global_var_names']
 		else:
 			return self._global['functions'][scope]['variables']['name_var']
+		
 	
 	def get_return_type_variables(self, scope, memory_dir):
 		if scope == "global":
@@ -115,7 +140,7 @@ class Semantics:
 		return self._global['functions'][scope]['variables'][memory_dir]['memory_dir']
 	
 	def get_name_variable(self, memory_dir, scope):
-		print(memory_dir, scope, self._global)
+		#print(memory_dir, scope, self._global)
 		if scope == "global":
 			return self._global['global_var'][memory_dir]['name']
 
@@ -139,3 +164,5 @@ class Semantics:
 			 self._global['global_var'][memory_dir]['name'] = name
 
 		self._global['functions'][scope]['variables'][memory_dir]['name'] = name
+
+	#hacer funcion get param_types de la funcion
