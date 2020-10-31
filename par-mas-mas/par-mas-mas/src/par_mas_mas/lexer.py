@@ -270,7 +270,7 @@ def p_punto_pop_or(p):
 		punto_pop_or :
 	
 	'''
-	global stack_operators, arr_quadruples, stack_operands, semantic_var
+	global stack_operators, arr_quadruples, stack_operands, semantic_var, stack_type
 	
 	if len(stack_operators) != 0:
 		top = stack_operators.pop()
@@ -280,10 +280,13 @@ def p_punto_pop_or(p):
 			op2 = stack_operands.pop()
 
 			aux_1 = semantic_var.get_value_variable(scope,op1) # value
-			aux_2 = semantic_var.get_value_variable(scope,op2)
+			aux_2 = semantic_var.get_value_variable(scope, op2)
+			
+			type_1 = stack_type.pop()
+			type_2 = stack_type.pop()
 			
 			#todo: checar tipos
-			if semantic_var.get_return_type_variables(scope,op1) == 4 and semantic_var.get_return_type_variables(scope, op2) == 4:
+			if type_1 == 4 and type_2 == 4:
 				# 1 memory dir : scope, 'bool', temp
 				dir_memory_aux = memory.get_value_memory(4, scope, True, False)
 				value = False
@@ -329,7 +332,7 @@ def p_pop_and(p):
 	pop_and :
 	
 	'''
-	global stack_operators, arr_quadruples, stack_operands
+	global stack_operators, arr_quadruples, stack_operands,stack_type
 	if len(stack_operators) != 0:
 		top = stack_operators.pop()
 
@@ -340,8 +343,11 @@ def p_pop_and(p):
 			aux_1 = semantic_var.get_value_variable(scope,op1) # value
 			aux_2 = semantic_var.get_value_variable(scope,op2)
 			
+			type_1 = stack_type.pop()
+			type_2 = stack_type.pop()
+			
 			#todo: checar tipos
-			if semantic_var.get_return_type_variables(scope, op1) == 4 and semantic_var.get_return_type_variables(scope, op2) == 4:
+			if type_1 == 4 and type_2 == 4:
 				# 1 memory dir : scope, 'bool', temp
 				dir_memory_aux = memory.get_value_memory(4, scope, True, False)
 				value = False
@@ -357,6 +363,8 @@ def p_pop_and(p):
 
 				q = Quadruple(top, op2, op1, dir_memory_aux)
 				arr_quadruples.append(q.get_quadruple())
+				stack_operands.append(dir_memory_aux)
+				stack_type.append(4)
 			else:
 				print("error en and")
 		else:
@@ -392,17 +400,20 @@ def p_punto_pop_relacional(p):
 	'''
 	punto_pop_relacional :
 	'''
-	global stack_operators, arr_quadruples
-	
+	global stack_operators, arr_quadruples, stack_type,stack_operands
+	print("llega a relacional", arr_quadruples, stack_operators, stack_operands)
 	if len(stack_operators) != 0:
 		top = stack_operators.pop()
 
-		op1 = stack_operands.pop()
-		op2 = stack_operands.pop()
+		op1 = stack_operands.pop() # 9 - dir
+		op2 = stack_operands.pop() # aglobal - dir
 
 		aux_1 = semantic_var.get_value_variable(scope,op1) # value
-		aux_2 = semantic_var.get_value_variable(scope,op2)
+		aux_2 = semantic_var.get_value_variable(scope, op2)  # aglobal
+		print(aux_1, aux_2, "relacionaaaa")
 
+		type_1 = stack_type.pop()
+		type_2 = stack_type.pop()
 
 		dir_memory_aux = memory.get_value_memory(4, scope, True, False)
 		value = False
@@ -419,14 +430,15 @@ def p_punto_pop_relacional(p):
 		elif top == '<>':
 			value = aux_2 != aux_1
 		else:
-			value = None
-			
+			value = False
 		
 		semantic_var.add_variables(4, scope, 'temp_variable', None,  value, dir_memory_aux, 0)
 			
 
 		q = Quadruple(top, op2, op1, dir_memory_aux)
 		arr_quadruples.append(q.get_quadruple())
+		stack_operands.append(dir_memory_aux)
+		stack_type.append(4)
 		
 def p_m_exp(p):
 	'''
@@ -440,7 +452,7 @@ def p_punto_mexp_pop(p):
 	'''
 	punto_mexp_pop :
 	'''
-	global stack_operators, arr_quadruples, cube, stack_operands
+	global stack_operators, arr_quadruples, cube, stack_operands, stack_type
 
 	if len(stack_operators) != 0:
 		top = stack_operators.pop()
@@ -455,8 +467,8 @@ def p_punto_mexp_pop(p):
 			aux_1 = semantic_var.get_value_variable(scope, op1) # value
 			aux_2 = semantic_var.get_value_variable(scope,op2)
 
-			type_aux_1 = semantic_var.get_return_type_variables(scope,op1)
-			type_aux_2 = semantic_var.get_return_type_variables(scope, op2)
+			type_aux_1 = stack_type.pop()
+			type_aux_2 = stack_type.pop()
 			
 			value_type = cube.get_type(type_aux_1, type_aux_2, top)
 
@@ -476,7 +488,7 @@ def p_punto_mexp_pop(p):
 				q = Quadruple(top, op2, op1, dir_memory_aux )
 				arr_quadruples.append(q.get_quadruple())
 				stack_operands.append(dir_memory_aux)
-				print(stack_operands, dir_memory_aux, "suma")
+				stack_type.append(value_type)
 
 		else:
 			stack_operators.append(top)
@@ -509,7 +521,7 @@ def p_punto_termino_pop(p):
 	'''
 	punto_termino_pop :
 	'''
-	global stack_operators, arr_quadruples, cube, stack_operands
+	global stack_operators, arr_quadruples, cube, stack_operands, stack_type
 
 	if len(stack_operators) != 0:
 		top = stack_operators.pop()
@@ -522,10 +534,10 @@ def p_punto_termino_pop(p):
 			op2 = stack_operands.pop()
 			
 			aux_1 = semantic_var.get_value_variable(scope, op1) # value
-			aux_2 = semantic_var.get_value_variable(scope,op2)
-
-			type_aux_1 = semantic_var.get_return_type_variables(scope,op1)
-			type_aux_2 = semantic_var.get_return_type_variables(scope, op2)
+			aux_2 = semantic_var.get_value_variable(scope, op2)
+			
+			type_aux_1 = stack_type.pop()
+			type_aux_2 = stack_type.pop()
 			
 			value_type = cube.get_type(type_aux_1, type_aux_2, top)
 
@@ -545,8 +557,7 @@ def p_punto_termino_pop(p):
 				q = Quadruple(top, op2, op1, dir_memory_aux )
 				arr_quadruples.append(q.get_quadruple())
 				stack_operands.append(dir_memory_aux)
-				print(stack_operands, dir_memory_aux, "multiplicacion")
-
+				stack_type.append(value_type)
 
 		else:
 			stack_operators.append(top)
@@ -585,6 +596,8 @@ def p_relacionales(p):
 									| GREATER_EQUAL
 									| LESS_EQUAL
 	'''
+	p[0] = p[1]
+
 
 def p_estatutos(p):
 	'''
@@ -620,15 +633,20 @@ def p_asignacion(p):
 	'''
 	asignacion : dec_varaux punto_asignacion_var EQUALS punto_igual m_exp punto_asignacion
 	'''
+
 def p_punto_asignacion_var(p):
 	'''
 	punto_asignacion_var : 
 	'''
-	global stack_operands
+	global stack_operands, stack_type, semantic_var, stack_type
 	var_id = semantic_var.get_memory_dir(p[-1], scope)
+	type_id = semantic_var.get_return_type_variables(scope, var_id)
+
 	if var_id != None:
 		stack_operands.append(var_id)
+		stack_type.append(type_id)
 		print(stack_operands, var_id, "asignacion")
+		print(stack_type, "stack_type")
 
 	p[0] = var_id
 
@@ -644,7 +662,7 @@ def p_punto_asignacion(p):
 	punto_asignacion : 
 
 	'''
-	global stack_operators, stack_operands, arr_quadruples, scope
+	global stack_operators, stack_operands, arr_quadruples, scope, stack_type
 	if p[-4] !=  None: 
 		name = semantic_var.get_name_variable(p[-4], scope) 
 		if name not in semantic_var.get_variables_sets(scope) or name == None:
@@ -653,12 +671,15 @@ def p_punto_asignacion(p):
 			elem = stack_operands.pop()
 			izq= stack_operands.pop()
 			op = stack_operators.pop()
-			#print(semantic_var.get_value_variable(scope, elem), semantic_var.get_value_variable(scope, izq), op, " asignacion!!!!!!")
+
+			ty1= stack_type.pop()
+			ty2= stack_type.pop()
+			print(semantic_var.get_value_variable(scope, elem), semantic_var.get_value_variable(scope, izq), op, " asignacion!!!!!!")
 			
 			value_aux = semantic_var.get_value_variable(scope, elem)
 			## checar el tipo de variable antes de asignar
-			
-			semantic_var.set_value(scope, elem, value_aux)
+			print(elem, value_aux, "=")
+			semantic_var.set_value(scope, izq, elem)
 			
 			q = Quadruple(op, elem, None, izq)
 			arr_quadruples.append(q.get_quadruple())
@@ -699,12 +720,15 @@ def p_punto_push_dec_var(p):
 	'''
 	punto_push_dec_var :
 	'''
-	global stack_operands, stack_operators
+	global stack_operands, stack_operators, stack_type
 
 	var_id = semantic_var.get_memory_dir(p[-1], scope)
+	type_id = semantic_var.get_return_type_variables(scope, var_id)
+
 	if p[-1] != None:
 		stack_operands.append(var_id)
 		print(stack_operands, var_id, "punto push dec var")
+		stack_type.append(type_id)
 
 	p[0] = var_id
 	
@@ -722,6 +746,7 @@ def p_punto_add_read_operand(p):
 		print(p[-2])
 		print("error punto de read")
 	else:
+		type1 = stack_type.pop()
 		q = Quadruple(stack_operators.pop(), None, None, stack_operands.pop())
 		arr_quadruples.append(q.get_quadruple())
 
@@ -743,11 +768,10 @@ def p_punto_escritura_push(p):
 	punto_escritura_push : 
 
 	'''
-	global stack_operands, semantic_var, stack_operators
+	global stack_operands, semantic_var, stack_operators, stack_type
 	if type(p[-1]) == str:
 		stack_operands.append(p[-1])
-		print(stack_operands, p[-1], "str")
-
+		stack_type.append(6)
 	else:
 		stack_operands.append(stack_operands.pop())
 
@@ -763,21 +787,56 @@ def p_punto_add_write_operand(p):
 	'''
 	punto_add_write_operand : 
 	'''
-	global arr_quadruples
-	global stack_operators
-	global stack_operands
-	global semantic_var
+	global arr_quadruples, stack_operators, stack_operands, semantic_var,stack_type
 	
 	# checar q este ok 
 	elemento = stack_operands.pop()
+	type_elment = stack_type.pop()
 	q = Quadruple(stack_operators.pop(), None, None, elemento)
 	arr_quadruples.append(q.get_quadruple())
 
 def p_decision(p):
 	'''
-	decision : IF LEFT_PAR exp_or RIGHT_PAR THEN LEFT_CURL estatutos RIGHT_CURL 
-						| IF LEFT_PAR exp_or RIGHT_PAR THEN LEFT_CURL estatutos RIGHT_CURL ELSE LEFT_CURL estatutos RIGHT_CURL
+	decision : IF LEFT_PAR exp_or RIGHT_PAR punto_if_exp THEN LEFT_CURL estatutos RIGHT_CURL punto_end_if 
+						| IF LEFT_PAR exp_or RIGHT_PAR punto_if_exp THEN LEFT_CURL estatutos RIGHT_CURL ELSE punto_else LEFT_CURL estatutos RIGHT_CURL punto_end_if
 	'''
+def p_punto_if_exp(p):
+	'''
+	punto_if_exp :
+	'''
+	global stack_type, stack_operands, arr_quadruples, stack_jumps
+	print("este es el stack de types", stack_type)
+	exp_type = stack_type.pop()
+	if(exp_type == 5):
+		print ("error, type mismatch")
+	else:
+		result = stack_operands.pop()
+		q = Quadruple('GotoF', result, None, None) 
+		print(q.get_quadruple())
+		arr_quadruples.append(q.get_quadruple())
+		print("este es el tamaño",len(arr_quadruples) -1 )
+		stack_jumps.append(len(arr_quadruples) - 1)
+		
+def p_punto_else(p):
+	'''
+	punto_else :
+	'''
+	global stack_jumps, arr_quadruples
+	print("entro al else")
+	q = Quadruple('GOTO',None,None,None)
+	arr_quadruples.append(q.get_quadruple())
+	print(arr_quadruples)
+	false= stack_jumps.pop()
+	stack_jumps.append(len(arr_quadruples)-1)
+	fill(false, len(arr_quadruples))
+
+def p_punto_end_if(p):
+	'''
+	punto_end_if :
+	'''
+	global stack_jumps, arr_quadruples
+	end = stack_jumps.pop()
+	fill(end, len(arr_quadruples))
 
 def p_repeticion(p):
 	'''
@@ -850,11 +909,9 @@ def p_punto_end_for (p):
 	punto_end_for :
 	'''
 
-
-		
 def p_condicional(p):
 	'''
-	condicional : WHILE punto_while LEFT_PAR exp_or RIGHT_PAR punto_validar_exp DO LEFT_CURL estatutos RIGHT_CURL punto_end_while
+	condicional : WHILE punto_while LEFT_PAR exp_or RIGHT_PAR punto_validar_exp LEFT_CURL estatutos RIGHT_CURL punto_end_while
 	'''
 
 def p_punto_while(p):
@@ -871,12 +928,16 @@ def p_punto_validar_exp(p):
 	'''
 	global stack_type, stack_operands, arr_quadruples
 	return_type = stack_type.pop()
+	print(return_type, "return type")
 	if return_type != 4:
 		print("Error, type mismatch")
 	else:
 		result = stack_operands.pop()
 		q = Quadruple('GOTOF', result,None,None)
 		arr_quadruples.append(q.get_quadruple())
+		stack_jumps.append(len(arr_quadruples) - 1)
+
+		
 
 def p_punto_end_while(p):
 	'''
@@ -887,7 +948,13 @@ def p_punto_end_while(p):
 	goto_return = stack_jumps.pop()
 	q = Quadruple('GOTO', None, None,goto_return)
 	arr_quadruples.append(q.get_quadruple())
-	#FILL(end,cont)
+	fill(end,len(arr_quadruples))
+
+def fill(end, cont):
+	global arr_quadruples
+	aux_q = arr_quadruples[end]
+	print(aux_q, "cuadruplo")
+	arr_quadruples[end] = (aux_q[0], aux_q[1], None, cont)
 
 
 def p_cte(p):
@@ -914,6 +981,7 @@ def p_factor_push_operand(p):
 		if memory_dir_p1 != None:
 			stack_operands.append(memory_dir_p1)
 			print(stack_operands, memory_dir_p1, "factor")
+			print(stack_type, "stack_type")
 			stack_type.append(type_aux_p1)
 
 #cambio de  add_variables a add_constant_variable y temp_variable a global_constant
@@ -924,10 +992,11 @@ def p_factor_float_push(p):
 	global stack_operands, stack_type
 	if p[-1] != None:
 		memory_dir_p1 = memory.get_value_memory(2, scope, True, True)
-		semantic_var.add_constant_variables(2, scope, 'temp_variable', p[-1], memory_dir_p1, 0)
+		semantic_var.add_constant_variables(2, scope, 'const_variable', p[-1], memory_dir_p1, 0)
 		stack_operands.append(memory_dir_p1)
-		print(stack_operands, memory_dir_p1,"factor float")
 		stack_type.append(2)
+		print(stack_operands, memory_dir_p1, "factor float")
+		print(stack_type, "stack_type")
 
 def p_factor_int_push(p):
 	'''
@@ -936,10 +1005,13 @@ def p_factor_int_push(p):
 	global stack_operands, scope
 	if p[-1] != None:
 		memory_dir_p1 = memory.get_value_memory(1, scope, True, True)
-		semantic_var.add_constant_variables(1, scope, 'temp_variable', p[-1], memory_dir_p1, 0)
+		semantic_var.add_constant_variables(1, scope, 'const_variable', p[-1], memory_dir_p1, 0)
 		stack_operands.append(memory_dir_p1)
-		print(stack_operands, memory_dir_p1, "factor_int")
 		stack_type.append(1)
+		print(stack_operands, memory_dir_p1, "factor_int")
+		print(stack_type, "stack_type")
+
+
 
 def p_factor_char_push(p):
 	'''
@@ -948,10 +1020,11 @@ def p_factor_char_push(p):
 	global stack_operands, stack_type
 	if p[-1] != None:
 		memory_dir_p1 = memory.get_value_memory(3, scope, True, True)
-		semantic_var.add_constant_variables(3, scope, 'temp_variable', p[-1], memory_dir_p1, 0)
+		semantic_var.add_constant_variables(3, 'global', 'const_variable', p[-1], memory_dir_p1, 0)
 		stack_operands.append(memory_dir_p1)
-		print(stack_operands, memory_dir_p1, "factor char")
 		stack_type.append(3)
+		print(stack_operands, memory_dir_p1, "factor char")
+		print(stack_type, "stack_type")
 
 def p_error(p): 
 	global error
@@ -983,7 +1056,7 @@ def parser():
 			return "hay errores de sintaxis"
 		else:
 			global arr_quadruples, stack_operands
-			print(arr_quadruples, stack_operands, len(arr_quadruples))
+			print(arr_quadruples, stack_operands, len(arr_quadruples), stack_type)
 			print(semantic_var._global)
 			return "apropiado"
 

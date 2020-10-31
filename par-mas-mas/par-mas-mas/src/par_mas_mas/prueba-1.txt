@@ -9,9 +9,20 @@ int func prueba(int a, char t){
     variablefloat = 1234.909;
     aglobal = 9 - 12;
     aglobal = 9 + 10;
-    aglobal = 11 / 10;
+    aglobal = 11.0 / 10;
     aglobal = 9 * 10;
+
+    if(aglobal == 3)then {
+      read(appp);
+    }else{
+      read(appp);
+    };
+
+    while(aglobal < 20){
+      write("shala");
+    };
 }
+
 
 void func shala(){
   var int: x;

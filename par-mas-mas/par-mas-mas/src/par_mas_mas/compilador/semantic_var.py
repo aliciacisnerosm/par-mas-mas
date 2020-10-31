@@ -4,16 +4,18 @@ class Semantics:
 			'functions': {
 				'func_names': set(), 
 				'main': {
+				'param_types': [],
+				'param_count': 0,
+				'init': -1,
+				'var_count': 0,
 				'return_type': 'void',
 					'variables': {
-						'var_name': set(),
-					},
-					'types':{
-						'param_types':[],
-					},
+						'name_var': set(),
+					}
 				}
-			},
-	}
+				}
+			}
+	
 		
 
 	def unique_function_names(self, name, return_type):
@@ -111,6 +113,8 @@ class Semantics:
 				'dimension': dimension,
 				'name': None				
 			}
+		print("se agregó exitosamente:", value)
+		print(self._global['global_var'][memory_dir])
 
 	#agrega tipos de dato para parametros de funciones
 	def add_parameter_type(self,scope,return_type):
@@ -147,11 +151,14 @@ class Semantics:
 		return self._global['functions'][scope]['variables'][memory_dir]['name']
 
 	def get_value_variable(self, scope, memory_dir):
-		print(scope, memory_dir)
 		if scope == "global":
+			print(self._global['global_var'][memory_dir], "get value variable global")
 			return self._global['global_var'][memory_dir]['value']
+		else:
+			print(self._global['functions'][scope]['variables'][memory_dir], "get value variable")
+			return self._global['functions'][scope]['variables'][memory_dir]['value']
 
-		return self._global['functions'][scope]['variables'][memory_dir]['value']
+		
 	
 	def set_value(self, scope, memory_dir, value):
 		if scope == "global":
