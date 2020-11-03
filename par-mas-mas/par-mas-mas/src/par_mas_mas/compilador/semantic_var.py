@@ -15,6 +15,7 @@ class Semantics:
 					}
 				}
 			},
+			'functions_id_return_values': dict()
 	}
 
 		
@@ -92,6 +93,11 @@ class Semantics:
 		
 		return "error en memory dir"
 
+	def add_function_id_return_value(self, name, return_type):
+		self._global['functions_id_return_values'][name] = return_type
+	
+	def add_function_return_value(self, name, value):
+		self._global['functions_id_return_values'][name] = value
 	# agrega variables temporales
 
 	def add_variables(self, return_type, scope, kind, name, value, memory_dir, dimension):

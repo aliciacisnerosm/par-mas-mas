@@ -243,11 +243,43 @@ def p_funciones(p):
 
 def p_funciones_aux(p):
 	'''
-		funciones_aux : tipo FUNC ID LEFT_PAR parametros RIGHT_PAR LEFT_CURL variables estatutos RIGHT_CURL
-						 | tipo FUNC ID LEFT_PAR RIGHT_PAR LEFT_CURL variables estatutos RIGHT_CURL
-						 | VOID FUNC ID punto_id_func LEFT_PAR RIGHT_PAR count_params LEFT_CURL variables count_vars  estatutos RIGHT_CURL end_func
-						 | VOID FUNC ID punto_id_func LEFT_PAR parametros RIGHT_PAR count_params LEFT_CURL variables count_vars  estatutos RIGHT_CURL end_func
+		funciones_aux : tipo FUNC ID punto_id_func punto_return_value LEFT_PAR not_params RIGHT_PAR LEFT_CURL not_variables estatutos RIGHT_CURL punto_end_function_return
+								 | VOID FUNC ID punto_id_func LEFT_PAR not_params RIGHT_PAR LEFT_CURL not_variables count_vars estatutos RIGHT_CURL end_func
 	'''
+def p_punto_return_value(p):
+	'''
+	punto_return_value :
+
+	'''
+	global semantic_var
+	semantic_var.add_function_id_return_value(p[-2], p[-4])
+
+def p_not_variables(p):
+	'''
+	not_variables : variables count_vars
+								| empty
+	'''
+
+def p_not_params(p):
+	'''
+	not_params : parametros count_params
+						 | empty
+	'''
+
+def p_punto_end_function_return(p):
+	'''
+		punto_end_function_return :
+	'''
+	global arr_quadruples, scope, semantic_var
+	
+	q = Quadruple('ENDFUNC',None,None,None)
+	arr_quadruples.append(q.get_quadruple())
+	
+	
+	semantic_var.remove_local_function(scope)
+	scope = 'global'
+	
+
 
 def p_punto_id_func(p):
 	'''
@@ -277,6 +309,7 @@ def p_dec_var_param(p):
 	'''
 	dec_var_param : tipo ID punto_push_param
 	'''
+	
 def p_punto_push_param(p):
 	'''
 	punto_push_param :
@@ -756,8 +789,19 @@ def p_llamada(p):
 
 def p_retorno(p):
 	'''
-		retorno : RETURN LEFT_PAR m_exp RIGHT_PAR
+		retorno : RETURN LEFT_PAR m_exp RIGHT_PAR punto_return
 	'''
+def p_punto_return(p):
+	'''
+	punto_return :
+	
+	'''
+	global stack_operands, semantic_var, stack_type
+	value = stack_operands.pop()
+	stack_type.pop()
+	semantic_var.add_function_return_value(scope, value)
+	q = Quadruple('=', value, None, scope)
+	arr_quadruples.append(q.get_quadruple())
 
 def p_punto_read_stack(p):
 	'''

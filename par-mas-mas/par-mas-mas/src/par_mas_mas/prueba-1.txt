@@ -27,6 +27,13 @@ void func shalalala(int param1, int param2){
   };
 }
 
+int func pruebatipo(int m, int n){
+  var int: z;
+  z=0;
+  write("funcion de tipo entero");
+  return(z);
+}
+
 main (){
   read(m);
 
