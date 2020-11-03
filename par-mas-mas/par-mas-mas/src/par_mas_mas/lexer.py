@@ -22,6 +22,8 @@ var_type = None # si tenemos tiempo, quitar global
 arr_quadruples = []
 cube = SemanticCube()
 vControl = None
+k = None
+func_name = None
 
 stack_operators = deque()
 stack_operands = deque()
@@ -217,7 +219,7 @@ def p_dec_varaux(p):
 							| ID LEFT_BR CTE_I RIGHT_BR LEFT_BR CTE_I RIGHT_BR
 	'''
 	p[0] = p[1]
-
+	
 
 
 #todo: agregar punto para las dimensiones (:
@@ -233,6 +235,33 @@ def p_dec_var(p):
 					| dec_varaux
 	'''
 
+def p_dec_var_llamada(p):
+	'''
+	dec_var_llamada : m_exp punto_verify_dec_param COMMA punto_mas_k dec_var_llamada
+					| m_exp punto_verify_dec_param
+	'''
+def p_punto_mas_k(p):
+	'''
+	punto_mas_k :
+
+	'''
+	global k
+	k += 1
+
+def p_punto_verify_dec_param(p):
+	'''
+	punto_verify_dec_param : 
+	'''
+	global stack_operands, stack_type, k, func_name, arr_quadruples
+	param_type = semantic_var._global['functions'][func_name]['param_types'][k]
+	param_1 = stack_operands.pop()
+	param_1_type = stack_type.pop()
+	if param_type != param_1_type:
+		print("Error: el tipo de parametro no coinicide con el indicado")
+	else:
+		q = Quadruple('param', param_1, None, 'param' + str(k + 1))
+		arr_quadruples.append(q.get_quadruple())
+	
 def p_funciones(p):
 	'''
 	funciones : funciones_aux
@@ -783,10 +812,46 @@ def p_punto_asignacion(p):
 
 def p_llamada(p):
 	'''
-		llamada : VD ID LEFT_PAR RIGHT_PAR
-						| VD ID LEFT_PAR dec_var RIGHT_PAR
+		llamada : ID punto_verify_id LEFT_PAR punto_era RIGHT_PAR punto_end_llamada
+						| ID punto_verify_id LEFT_PAR punto_era dec_var_llamada RIGHT_PAR punto_verify_total_params punto_end_llamada
+						
 	'''
+def p_punto_verify_id(p):
+	'''
+	punto_verify_id :
+	'''
+	global semantic_var, arr_quadruples
+	if not semantic_var.verify_function_id(p[-1]):
+		print("Error: esta función no existe")
 
+def p_punto_verify_total_params(p):
+	'''
+	punto_verify_total_params :
+	'''
+	global k, semantic_var
+	total_params= len(semantic_var._global['functions'][func_name]['param_types'])
+	if(k+1!=total_params):
+		print("error no coincide cantidad de parametros")
+
+def p_punto_end_llamada(p):
+	'''
+	punto_end_llamada :
+	'''
+	global arr_quadruples, func_name, semantic_var
+	q = Quadruple('GOSUB',func_name,None, semantic_var.get_init_function(func_name))
+	arr_quadruples.append(q.get_quadruple())	
+
+def p_punto_era(p):
+	'''
+	punto_era :
+	'''
+	global k, arr_quadruples, func_name
+	q = Quadruple('ERA', None,None,p[-3])
+	arr_quadruples.append(q.get_quadruple())
+	k=0
+	func_name = p[-3]
+
+	
 def p_retorno(p):
 	'''
 		retorno : RETURN LEFT_PAR m_exp RIGHT_PAR punto_return
@@ -1183,6 +1248,10 @@ def parser():
 			global arr_quadruples, stack_operands
 			print(arr_quadruples, stack_operands, len(arr_quadruples), stack_type)
 			print(semantic_var._global)
+			
+			for i in arr_quadruples:
+				print(i, file=open("output_quadruples-1.txt", "a"))
+
 			return "apropiado"
 
 

@@ -33,6 +33,12 @@ class Semantics:
 					'name_var': set()
 				},
 			}
+	
+	def get_init_function(self, name):
+		return self._global['functions'][name]['init']
+
+	def verify_function_id(self, name):
+		return name in self._global['functions']['func_names']
 		
 	#declara variables 
 	def declare_variables(self, return_type, scope, kind, name, value, memory_dir, dimension):
@@ -139,7 +145,7 @@ class Semantics:
 
 	def remove_local_function(self, scope):
 		if scope != 'global':
-			del self._global['functions'][scope]
+			del self._global['functions'][scope]['variables']
 
 	#agrega tipos de dato para parametros de funciones
 	def add_parameter_type(self,scope,return_type):

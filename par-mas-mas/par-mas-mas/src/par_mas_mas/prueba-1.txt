@@ -17,22 +17,31 @@ void func prueba(int a, char t){
       read(aglobal);
     };
 }
+
+int func pruebatipo(int m, int n){
+  var int: z;
+  z = 10+20;
+
+  write("funcion de tipo entero");
+  return(z);
+}
+
+
 void func shalalala(int param1, int param2){
   var int: y, variablelocal;
+  y =10;
+  variablelocal = 20;
   write("hola", "hola 2",  5 * 9.7);
   read(aglobal, b);
   
   for (y = 1 to 5){
     write("entro al for");
   };
+  
+  pruebatipo(5,4*3-2);
 }
 
-int func pruebatipo(int m, int n){
-  var int: z;
-  z=0;
-  write("funcion de tipo entero");
-  return(z);
-}
+
 
 main (){
   read(m);
