@@ -31,7 +31,8 @@ class Memory:
 			'global_constant':{
 				'int' : 15000,
 				'float': 16000,
-				'char' : 17000
+				'char': 17000,
+				'string': 18000
 			}
 		}
 #TO DO: HANDLE ERRORS
@@ -91,23 +92,23 @@ class Memory:
 ###########################################
 
 	def add_int_local(self):
-		if self.memory['local_temp']['int'] < 9000:
-			self.memory['local_temp']['int'] += 1
-			return self.memory['local_temp']['int']
+		if self.memory['dir_local']['int'] < 9000:
+			self.memory['dir_local']['int'] += 1
+			return self.memory['dir_local']['int']
 		else:
 			return "error"
 
 	def add_float_local(self):
-		if self.memory['local_temp']['float'] < 10000:
-			self.memory['local_temp']['float'] += 1
-			return self.memory['local_temp']['float']
+		if self.memory['dir_local']['float'] < 10000:
+			self.memory['dir_local']['float'] += 1
+			return self.memory['dir_local']['float']
 		else:
 			return "error"
 
 	def add_char_local(self):
-		if self.memory['local_temp']['char'] < 11000:
-			self.memory['local_temp']['char'] += 1
-			return self.memory['local_temp']['char']
+		if self.memory['dir_local']['char'] < 11000:
+			self.memory['dir_local']['char'] += 1
+			return self.memory['dir_local']['char']
 		else:
 			return "error"
 
@@ -128,6 +129,7 @@ class Memory:
 			return "error"
 
 	def add_char_local_temp(self):
+		print("si entra aquiiiii", self.memory['local_temp']['char'] )
 		if self.memory['local_temp']['char'] < 14000:
 			self.memory['local_temp']['char'] += 1
 			return self.memory['local_temp']['char']

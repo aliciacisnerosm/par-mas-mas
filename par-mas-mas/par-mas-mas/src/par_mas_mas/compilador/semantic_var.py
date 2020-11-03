@@ -6,29 +6,33 @@ class Semantics:
 				'main': {
 				'param_types': [],
 				'param_count': 0,
-				'init': -1,
+				'init': 0,
 				'var_count': 0,
+				'temp_count':0,
 				'return_type': 'void',
 					'variables': {
 						'name_var': set(),
 					}
 				}
-				}
-			}
-	
-		
+			},
+	}
 
-	def unique_function_names(self, name, return_type):
-		if name in self._global.functions.func_names:
-			return "error"
-		else:
+		
+	def declare_function(self, name, return_type, init_val):
+		if name not in self._global['functions']['func_names']:
 			self._global['functions']['func_names'].add(name)
-			self._global['functions']['func_names'][name] = {
+			self._global['functions'][name] = {
+				'param_types': [],
+				'param_count': 0,
+				'var_count': 0,
+				'init': init_val, 
+				'temp_count': 0,
 				'return_type': return_type,
 				'variables': {
-					'var_names': set()
-				}
+					'name_var': set()
+				},
 			}
+		
 	#declara variables 
 	def declare_variables(self, return_type, scope, kind, name, value, memory_dir, dimension):
 		if scope == 'global':
@@ -65,6 +69,7 @@ class Semantics:
 				return ("Error: Variable ya declarada", name, return_type)
 	
 	def get_memory_dir(self, name, scope):
+		print(name, scope, "getmemorydir")
 		if scope == "global":
 			list_keys = list(self._global['global_var'].keys())
 			for i in list_keys:
@@ -73,10 +78,19 @@ class Semantics:
 						return self._global['global_var'][i]['memory_dir']
 		else:
 			list_keys = list(self._global['functions'][scope]['variables'].keys())
+			print(self._global['functions'][scope]['variables'])
 			for i in list_keys:
 				if i != 'name_var':
 					if self._global['functions'][scope]['variables'][i]['name'] == name and name != None:
 						return self._global['functions'][scope]['variables'][i]['memory_dir']
+		
+			list_keys = list(self._global['global_var'].keys())
+			for i in list_keys:
+				if i != 'global_var_names':
+					if self._global['global_var'][i]['name'] == name and name != None:
+						return self._global['global_var'][i]['memory_dir']
+		
+		return "error en memory dir"
 
 	# agrega variables temporales
 
@@ -89,7 +103,7 @@ class Semantics:
 					'kind': kind,
 					'value': value,
 					'memory_dir': memory_dir,
-					'dimension': dimension
+					'dimension': dimension,
 				}
 		else:
 			self._global['functions'][scope]['variables'][memory_dir] = {
@@ -99,9 +113,12 @@ class Semantics:
 					'kind': kind,
 					'value': value,
 					'memory_dir': memory_dir,
-					'dimension': dimension
+					'dimension': dimension,
 				}
-		print("se registro existosamente:", value)
+			self._global['functions'][scope]['temp_count'] += 1 
+		
+			
+
 
 	def add_constant_variables(self, return_type, scope, kind, value, memory_dir, dimension):
 		self._global['global_var'][memory_dir] = {
@@ -111,65 +128,61 @@ class Semantics:
 				'value': value,
 				'memory_dir': memory_dir,
 				'dimension': dimension,
-				'name': None				
+				'name': None
 			}
-		print("se agregó exitosamente:", value)
-		print(self._global['global_var'][memory_dir])
+
+	def remove_local_function(self, scope):
+		if scope != 'global':
+			del self._global['functions'][scope]
 
 	#agrega tipos de dato para parametros de funciones
 	def add_parameter_type(self,scope,return_type):
 		if scope != 'global':
-			self._global['types']={
-				['param_types'].append(return_type)
-			}
+			self._global['functions'][scope]['param_types'].append(return_type)
+			
+	def count_params(self, scope):
+		if scope != 'global':
+			self._global['functions'][scope]['param_count'] = len(self._global['functions'][scope]['param_types']) 
 
+	def count_vars(self, scope):
+		if scope != 'global':
+			self._global['functions'][scope]['var_count'] = abs(len(self._global['functions'][scope]['variables']['name_var']) - len(self._global['functions'][scope]['param_types']) )
 
-	def get_variables_sets(self, scope):
-		if scope == "global":
-			return self._global['global_var']['global_var_names']
+	def get_variables_sets(self, var, scope):
+		if scope != 'global':
+			return var in self._global['global_var']['global_var_names'] or var in self._global['functions'][scope]['variables']['name_var']
 		else:
-			return self._global['functions'][scope]['variables']['name_var']
-		
+			return var in self._global['global_var']['global_var_names']
 	
 	def get_return_type_variables(self, scope, memory_dir):
-		if scope == "global":
+
+		if memory_dir in self._global['global_var']:
 			return self._global['global_var'][memory_dir]['return_type']
+		elif memory_dir in self._global['functions'][scope]['variables']:
+			return self._global['functions'][scope]['variables'][memory_dir]['return_type']
 
-		return self._global['functions'][scope]['variables'][memory_dir]['return_type']
-
-	def get_memory_dir_variable(self, scope, memory_dir):
-		if scope == "global":
-			return self._global['global_var'][memory_dir]['memory_dir']
-		
-		return self._global['functions'][scope]['variables'][memory_dir]['memory_dir']
-	
 	def get_name_variable(self, memory_dir, scope):
-		#print(memory_dir, scope, self._global)
-		if scope == "global":
+		if memory_dir in self._global['functions'][scope]['variables']:
+			return self._global['functions'][scope]['variables'][memory_dir]['name']			
+		elif memory_dir in self._global['global_var']:
 			return self._global['global_var'][memory_dir]['name']
-
-		return self._global['functions'][scope]['variables'][memory_dir]['name']
-
+	
 	def get_value_variable(self, scope, memory_dir):
-		if scope == "global":
-			print(self._global['global_var'][memory_dir], "get value variable global")
+		if memory_dir in self._global['functions'][scope]['variables']:
+			return self._global['functions'][scope]['variables'][memory_dir]['value']	
+		elif  memory_dir in self._global['global_var']:
 			return self._global['global_var'][memory_dir]['value']
-		else:
-			print(self._global['functions'][scope]['variables'][memory_dir], "get value variable")
-			return self._global['functions'][scope]['variables'][memory_dir]['value']
-
-		
 	
 	def set_value(self, scope, memory_dir, value):
-		if scope == "global":
+		if memory_dir in self._global['functions'][scope]['variables']:
+			self._global['functions'][scope]['variables'][memory_dir]['value'] = value	
+		elif memory_dir in self._global['global_var']:
 			self._global['global_var'][memory_dir]['value'] = value
-		else:
-			self._global['functions'][scope]['variables'][memory_dir]['value'] = value
 
 	def add_variable_name(self, scope, memory_dir, name):
-		if scope == "global":
-			 self._global['global_var'][memory_dir]['name'] = name
-
-		self._global['functions'][scope]['variables'][memory_dir]['name'] = name
+		if memory_dir in self._global['functions'][scope]['variables']:
+			self._global['functions'][scope]['variables'][memory_dir]['name'] = name	
+		elif memory_dir in self._global['global_var']:
+			self._global['global_var'][memory_dir]['name'] = name
 
 	#hacer funcion get param_types de la funcion

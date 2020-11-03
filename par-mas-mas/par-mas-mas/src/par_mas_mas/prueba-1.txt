@@ -1,35 +1,33 @@
 program prueba :
 var int: aglobal, b[0][10],c[0] & char: d & int: x & char: ap & char: appp, b1, m & float: variablefloat;
 
-int func prueba(int a, char t){
+void func prueba(int a, char t){
     var int: variablelocal, va23[4] & char: o9;
-    read(aglobal);
-    read(appp);
+    variablelocal = 2;
+    a = 5*3-2;
+    o9 = a;
+    read(a);
+    read(o9);
     write("hola", 2309231);
     variablefloat = 1234.909;
-    aglobal = 9 - 12;
-    aglobal = 9 + 10;
-    aglobal = 11.0 / 10;
-    aglobal = 9 * 10;
-
-    if(aglobal == 3)then {
-      read(appp);
-    }else{
-      read(appp);
-    };
-
-    while(aglobal < 20){
-      write("shala");
+    aglobal = 2;
+    if(aglobal > 9) then {
+      write("aglobal");
+    } else {
+      read(aglobal);
     };
 }
-
-
-void func shala(){
-  var int: x;
+void func shalalala(int param1, int param2){
+  var int: y, variablelocal;
   write("hola", "hola 2",  5 * 9.7);
   read(aglobal, b);
+  
+  for (y = 1 to 5){
+    write("entro al for");
+  };
 }
 
 main (){
   read(m);
+
 }
