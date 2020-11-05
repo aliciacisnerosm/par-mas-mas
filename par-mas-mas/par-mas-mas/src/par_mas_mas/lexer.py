@@ -57,7 +57,7 @@ reserved = {
 
 
 tokens = [ 'ID', 'COLON','SEMICOLON', 'LEFT_PAR', 'RIGHT_PAR', 'LEFT_BR', 'RIGHT_BR', 'LEFT_CURL', 'RIGHT_CURL',
-'COMMA', 'EQUALS', 'PLUS', 'MINUS', 'MULTIPLY', 'DIVIDE', 'GREATER_THAN', 'LESS_THAN', 'DIFFERENT', 'GREATER_EQUAL','LESS_EQUAL','EQUAL', 'STR', 
+'COMMA', 'EQUALS', 'PLUS', 'MINUS', 'MULTIPLY', 'DIVIDE', 'GREATER_THAN', 'LESS_THAN', 'DIFFERENT', 'GREATER_EQUAL','LESS_EQUAL','EQUAL','STR',
 'CTE_I','CTE_CHAR', 'MORE', 'DOT',
 ] + list(reserved.values())
 
@@ -139,21 +139,28 @@ def p_punto_program(p):
 	'''
 	punto_program : 
 	'''
-	global semantic_var, memory, quadruples
+	global semantic_var, memory, arr_quadruples
 	semantic_var = Semantics()
 	memory = Memory()
 
 	global_var = {
 		'global_var_names': set(),
 	}
-
 	semantic_var._global['global_var'] = global_var
+	q = Quadruple('GOTO', None, None, None)
+	arr_quadruples.append(q.get_quadruple())
 
 def p_main(p):
 	'''
-	main : MAIN LEFT_PAR RIGHT_PAR LEFT_CURL main_aux RIGHT_CURL
+	main : MAIN LEFT_PAR RIGHT_PAR LEFT_CURL punto_goto_main main_aux RIGHT_CURL
 
 	'''
+def p_punto_goto_main(p):
+	'''
+	punto_goto_main :
+	'''
+	global arr_quadruples
+	arr_quadruples[0]=('GOTO',None,None,len(arr_quadruples)+1)
 
 def p_main_aux(p):
 	'''
@@ -299,13 +306,16 @@ def p_punto_end_function_return(p):
 	'''
 		punto_end_function_return :
 	'''
-	global arr_quadruples, scope, semantic_var
+	global arr_quadruples, scope, semantic_var, memory
 	
 	q = Quadruple('ENDFUNC',None,None,None)
 	arr_quadruples.append(q.get_quadruple())
 	
 	
 	semantic_var.remove_local_function(scope)
+	memory.reset_local_temp()
+	memory.reset_dir_local()
+
 	scope = 'global'
 	
 
@@ -382,7 +392,6 @@ def p_end_func(p):
 	
 	q = Quadruple('ENDFUNC',None,None,None)
 	arr_quadruples.append(q.get_quadruple())
-	print(semantic_var._global)
 	semantic_var.remove_local_function(scope)
 	scope = 'global'
 
@@ -528,7 +537,7 @@ def p_punto_pop_relacional(p):
 	punto_pop_relacional :
 	'''
 	global stack_operators, arr_quadruples, stack_type,stack_operands
-	print("llega a relacional", arr_quadruples, stack_operators, stack_operands)
+
 	if len(stack_operators) != 0:
 		top = stack_operators.pop()
 
@@ -633,7 +642,7 @@ def p_punto_m_exp_push(p):
 	global stack_operators
 	if p[-1] != None:
 		stack_operators.append(p[-1])
-		print(p[-1])
+		
 
 
 def p_termino(p):
@@ -701,7 +710,6 @@ def p_punto_termino_aux(p):
 	global stack_operators
 	if p[-1] != None:
 		stack_operators.append(p[-1])
-		print(p[-1])
 
 def p_factor(p):
 	'''
@@ -772,7 +780,6 @@ def p_punto_asignacion_var(p):
 	if var_id != None:
 		stack_operands.append(var_id)
 		stack_type.append(type_id)
-		print(stack_type, "stack_type")
 
 	p[0] = var_id
 
@@ -804,7 +811,6 @@ def p_punto_asignacion(p):
 			
 			value_aux = semantic_var.get_value_variable(scope, elem)
 			## checar el tipo de variable antes de asignar
-			print(elem, value_aux, "=")
 			semantic_var.set_value(scope, izq, elem)
 			
 			q = Quadruple(op, elem, None, izq)
@@ -976,16 +982,13 @@ def p_punto_if_exp(p):
 	punto_if_exp :
 	'''
 	global stack_type, stack_operands, arr_quadruples, stack_jumps
-	print("este es el stack de types", stack_type)
 	exp_type = stack_type.pop()
 	if(exp_type == 5):
 		print ("error, type mismatch")
 	else:
 		result = stack_operands.pop()
 		q = Quadruple('GOTOF', result, None, None) 
-		print(q.get_quadruple())
 		arr_quadruples.append(q.get_quadruple())
-		print("este es el tamaño",len(arr_quadruples) -1 )
 		stack_jumps.append(len(arr_quadruples) - 1)
 		
 def p_punto_else(p):
@@ -993,13 +996,11 @@ def p_punto_else(p):
 	punto_else :
 	'''
 	global stack_jumps, arr_quadruples
-	print("entro al else")
 	q = Quadruple('GOTO',None,None,None)
 	arr_quadruples.append(q.get_quadruple())
 	false= stack_jumps.pop()
 	stack_jumps.append(len(arr_quadruples)-1)
 	fill(false, len(arr_quadruples))
-	print(arr_quadruples)
 
 def p_punto_end_if(p):
 	'''
@@ -1033,7 +1034,6 @@ def p_punto_for(p):
 	else:
 		stack_operands.append(memory_dir_p1) # id = j 
 		stack_type.append(return_type)  # type - int
-		print(stack_type, "stack_type_for")
 
 def p_punto_exp_for_inf(p):
 	'''
@@ -1119,7 +1119,6 @@ def p_punto_validar_exp(p):
 	'''
 	global stack_type, stack_operands, arr_quadruples
 	return_type = stack_type.pop()
-	print(return_type, "return type")
 	if return_type != 4:
 		print("Error, type mismatch")
 	else:
@@ -1169,8 +1168,6 @@ def p_factor_push_operand(p):
 		type_aux_p1 = semantic_var.get_return_type_variables(scope,memory_dir_p1)
 		if memory_dir_p1 != None:
 			stack_operands.append(memory_dir_p1)
-			print(stack_operands, memory_dir_p1, "factor")
-			print(stack_type, "stack_type")
 			stack_type.append(type_aux_p1)
 
 #cambio de  add_variables a add_constant_variable y temp_variable a global_constant
@@ -1184,8 +1181,6 @@ def p_factor_float_push(p):
 		semantic_var.add_constant_variables(2, scope, 'const_variable', p[-1], memory_dir_p1, 0)
 		stack_operands.append(memory_dir_p1)
 		stack_type.append(2)
-		print(stack_operands, memory_dir_p1, "factor float")
-		print(stack_type, "stack_type")
 
 def p_factor_int_push(p):
 	'''
@@ -1197,9 +1192,6 @@ def p_factor_int_push(p):
 		semantic_var.add_constant_variables(1, scope, 'const_variable', p[-1], memory_dir_p1, 0)
 		stack_operands.append(memory_dir_p1)
 		stack_type.append(1)
-		print(stack_operands, memory_dir_p1, "factor_int")
-		print(stack_type, "stack_type")
-
 
 
 def p_factor_char_push(p):
@@ -1209,12 +1201,9 @@ def p_factor_char_push(p):
 	global stack_operands, stack_type
 	if p[-1] != None:
 		memory_dir_p1 = memory.get_value_memory(3, scope, True, True)
-		print("este es un charrrrr", memory_dir_p1)
 		semantic_var.add_constant_variables(3, 'global', 'const_variable', p[-1], memory_dir_p1, 0)
 		stack_operands.append(memory_dir_p1)
 		stack_type.append(3)
-		print(stack_operands, memory_dir_p1, "factor char")
-		print(stack_type, "stack_type")
 
 def p_error(p): 
 	global error
@@ -1245,13 +1234,10 @@ def parser():
 		if error: 
 			return "hay errores de sintaxis"
 		else:
-			global arr_quadruples, stack_operands
-			print(arr_quadruples, stack_operands, len(arr_quadruples), stack_type)
-			print(semantic_var._global)
+			global arr_quadruples, stack_operands, semantic_var
 			
-			for i in arr_quadruples:
-				print(i, file=open("output_quadruples-1.txt", "a"))
-
+			for index, value in enumerate(arr_quadruples):
+				print(index + 1, value, file=open("output_quadruples-1.txt", "a"))
 			return "apropiado"
 
 

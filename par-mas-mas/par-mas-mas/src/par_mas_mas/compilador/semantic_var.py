@@ -76,7 +76,6 @@ class Semantics:
 				return ("Error: Variable ya declarada", name, return_type)
 	
 	def get_memory_dir(self, name, scope):
-		print(name, scope, "getmemorydir")
 		if scope == "global":
 			list_keys = list(self._global['global_var'].keys())
 			for i in list_keys:
@@ -85,7 +84,6 @@ class Semantics:
 						return self._global['global_var'][i]['memory_dir']
 		else:
 			list_keys = list(self._global['functions'][scope]['variables'].keys())
-			print(self._global['functions'][scope]['variables'])
 			for i in list_keys:
 				if i != 'name_var':
 					if self._global['functions'][scope]['variables'][i]['name'] == name and name != None:
@@ -128,9 +126,6 @@ class Semantics:
 					'dimension': dimension,
 				}
 			self._global['functions'][scope]['temp_count'] += 1 
-		
-			
-
 
 	def add_constant_variables(self, return_type, scope, kind, value, memory_dir, dimension):
 		self._global['global_var'][memory_dir] = {

@@ -5,7 +5,6 @@ void func prueba(int a, char t){
     var int: variablelocal, va23[4] & char: o9;
     variablelocal = 2;
     a = 5*3-2;
-    o9 = a;
     read(a);
     read(o9);
     write("hola", 2309231);

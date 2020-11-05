@@ -129,7 +129,6 @@ class Memory:
 			return "error"
 
 	def add_char_local_temp(self):
-		print("si entra aquiiiii", self.memory['local_temp']['char'] )
 		if self.memory['local_temp']['char'] < 14000:
 			self.memory['local_temp']['char'] += 1
 			return self.memory['local_temp']['char']
@@ -173,7 +172,6 @@ class Memory:
 			return self.memory['global_constant']['string']
 		else:
 			return "error"
-		
 		
 
 ##########################################
