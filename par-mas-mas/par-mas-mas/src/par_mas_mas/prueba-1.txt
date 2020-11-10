@@ -1,6 +1,7 @@
 program prueba :
 var int: aglobal, b[0][10],c[0] & char: d & int: x & char: ap & char: appp, b1, m & float: variablefloat;
 
+
 void func prueba(int a, char t){
     var int: variablelocal, va23[4] & char: o9;
     variablelocal = 2;
@@ -8,6 +9,7 @@ void func prueba(int a, char t){
     read(a);
     read(o9);
     write("hola", 2309231);
+    write(a);
     variablefloat = 1234.909;
     aglobal = 2;
     if(aglobal > 9) then {
@@ -30,7 +32,7 @@ void func shalalala(int param1, int param2){
   var int: y, variablelocal;
   y =10;
   variablelocal = 20;
-  write("hola", "hola 2",  5 * 9.7);
+  write("hola","hola 2", 5 * 9.7  );
   read(aglobal, b);
   
   for (y = 1 to 5){

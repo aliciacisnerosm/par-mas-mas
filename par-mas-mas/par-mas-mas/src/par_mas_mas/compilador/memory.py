@@ -243,10 +243,15 @@ class Memory:
 					return self.add_char_local_temp()
 					
 		elif return_type == 4:
-			if scope == "global":
+			if scope != "global":
 				if temp:
 					return self.add_bool_temp()
 				else:
 					return self.add_bool_local_temp()
+		
+		elif return_type == 6:
+			if scope != "global" and const:
+				return self.add_string_constante()
+				
 
 

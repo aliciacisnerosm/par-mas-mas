@@ -8,7 +8,9 @@ class Semantics:
 				'param_count': 0,
 				'init': 0,
 				'var_count': 0,
-				'temp_count':0,
+				'var_types': [0,0,0], # 0 int, 1 float & 2 char
+				'temp_count': 0,
+				'temp_types': [0,0,0,0], # 0 int, 1 float, 2 char & 3 bool
 				'return_type': 'void',
 					'variables': {
 						'name_var': set(),
@@ -29,6 +31,8 @@ class Semantics:
 				'init': init_val, 
 				'temp_count': 0,
 				'return_type': return_type,
+				'temp_types': [0, 0, 0, 0],
+				'var_types': [0,0,0],
 				'variables': {
 					'name_var': set()
 				},
@@ -54,8 +58,16 @@ class Semantics:
 					'memory_dir': memory_dir,
 					'dimension': dimension
 				}
-
-				return ("exitoso", name, return_type)
+				
+				if kind != 'param_types':
+					if return_type == 1:
+						self._global['global_count']['var_types'][0] += 1
+					elif return_type == 2:
+						self._global['global_count']['var_types'][1] += 1
+					elif return_type == 3:
+						self._global['global_count']['var_types'][2] += 1
+				self._global['global_count']['var_count'] += 1
+				
 			else: 
 				return ("Error: Variable ya declarada", name, return_type)
 		else: 
@@ -71,10 +83,20 @@ class Semantics:
 					'dimension': dimension
 
 				}
-				return ("exitoso", name, return_type)
+			if kind != 'param_types' and scope != 'global':
+				if return_type == 1:
+					self._global['functions'][scope]['var_types'][0] += 1
+				elif return_type == 2:
+					self._global['functions'][scope]['var_types'][1] += 1
+				elif return_type == 3:
+					self._global['functions'][scope]['var_types'][2] += 1
+
 			else:
 				return ("Error: Variable ya declarada", name, return_type)
-	
+		
+		
+		return ("exitoso", name, return_type)
+
 	def get_memory_dir(self, name, scope):
 		if scope == "global":
 			list_keys = list(self._global['global_var'].keys())
@@ -125,7 +147,17 @@ class Semantics:
 					'memory_dir': memory_dir,
 					'dimension': dimension,
 				}
-			self._global['functions'][scope]['temp_count'] += 1 
+			self._global['functions'][scope]['temp_count'] += 1
+		
+			if kind == 'temp_variable':
+				if return_type == 1:
+					self._global['functions'][scope]['temp_types'][0] += 1
+				elif return_type == 2:
+					self._global['functions'][scope]['temp_types'][1] += 1
+				elif return_type == 3:
+					self._global['functions'][scope]['temp_types'][2] += 1
+				elif return_type == 4:
+					self._global['functions'][scope]['temp_types'][3] += 1
 
 	def add_constant_variables(self, return_type, scope, kind, value, memory_dir, dimension):
 		self._global['global_var'][memory_dir] = {

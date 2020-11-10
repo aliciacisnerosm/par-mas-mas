@@ -1,0 +1,13 @@
+program prueba3:
+var int: a,b,c, m;
+
+void func pruebatipo(){
+  a = 10+20;
+
+  write(a);
+}
+
+
+main (){
+  pruebatipo();
+}

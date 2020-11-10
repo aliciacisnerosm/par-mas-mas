@@ -11,6 +11,7 @@ from par_mas_mas.compilador.semantic_var import *
 from par_mas_mas.compilador.quadruples import *
 from par_mas_mas.compilador.memory import *
 from par_mas_mas.compilador.types import *
+from par_mas_mas.compilador.virtual_machine import *
 from collections import deque
 import os
 
@@ -24,6 +25,7 @@ cube = SemanticCube()
 vControl = None
 k = None
 func_name = None
+generator = None
 
 stack_operators = deque()
 stack_operands = deque()
@@ -62,7 +64,7 @@ tokens = [ 'ID', 'COLON','SEMICOLON', 'LEFT_PAR', 'RIGHT_PAR', 'LEFT_BR', 'RIGHT
 ] + list(reserved.values())
 
 #EXPRESIONES REGULARES SIMPLES
-t_STR = r'\".*\"'
+t_STR = r'\"([^"]|\\")*"'
 t_COLON = r'\:'
 t_SEMICOLON = r'\;'
 t_LEFT_PAR = r'\('
@@ -142,19 +144,32 @@ def p_punto_program(p):
 	global semantic_var, memory, arr_quadruples
 	semantic_var = Semantics()
 	memory = Memory()
-
 	global_var = {
 		'global_var_names': set(),
 	}
 	semantic_var._global['global_var'] = global_var
+	semantic_var._global['global_count'] = {
+		'var_count': 0,
+		'var_types': [0,0,0] # 0 int, 1 float & 2 char
+	}
+
 	q = Quadruple('GOTO', None, None, None)
 	arr_quadruples.append(q.get_quadruple())
 
 def p_main(p):
 	'''
-	main : MAIN LEFT_PAR RIGHT_PAR LEFT_CURL punto_goto_main main_aux RIGHT_CURL
+	main : MAIN LEFT_PAR RIGHT_PAR LEFT_CURL punto_goto_main main_aux RIGHT_CURL punto_generator
 
 	'''
+def p_punto_generator(p):
+	'''
+	punto_generator :
+	'''
+	global  arr_quadruples, semantic_var
+	virtualMachine = VirtualMachine(arr_quadruples,semantic_var._global)
+	#virtualMachine.execute()
+	
+
 def p_punto_goto_main(p):
 	'''
 	punto_goto_main :
@@ -947,9 +962,16 @@ def p_punto_escritura_push(p):
 	'''
 	global stack_operands, semantic_var, stack_operators, stack_type
 	if type(p[-1]) == str:
-		stack_operands.append(p[-1])
-		stack_type.append(6)
+		if not re.search("\".*\"", p[-1]):
+			stack_operands.append(stack_operands.pop())
+		else:
+			memory_dir = memory.get_value_memory(6, scope, False, True)
+			semantic_var.add_constant_variables(6, scope, 'const_variable', p[-1], memory_dir, 0)
+			stack_operands.append(memory_dir)
+			stack_type.append(6)
+
 	else:
+		print(p[-1], "no entra al if")
 		stack_operands.append(stack_operands.pop())
 
 		
@@ -969,6 +991,7 @@ def p_punto_add_write_operand(p):
 	# checar q este ok 
 	elemento = stack_operands.pop()
 	type_elment = stack_type.pop()
+	print("elementos", elemento)
 	q = Quadruple(stack_operators.pop(), None, None, elemento)
 	arr_quadruples.append(q.get_quadruple())
 
