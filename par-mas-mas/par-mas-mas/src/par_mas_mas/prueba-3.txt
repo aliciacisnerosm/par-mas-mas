@@ -3,8 +3,8 @@ var int: a,b,c, m;
 
 void func pruebatipo(){
   a = 10+20;
-
-  write(a);
+  a = 9 - 6;
+  read(a);
 }
 
 

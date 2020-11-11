@@ -167,7 +167,7 @@ def p_punto_generator(p):
 	'''
 	global  arr_quadruples, semantic_var
 	virtualMachine = VirtualMachine(arr_quadruples,semantic_var._global)
-	#virtualMachine.execute()
+	virtualMachine.execute()
 	
 
 def p_punto_goto_main(p):
@@ -175,7 +175,7 @@ def p_punto_goto_main(p):
 	punto_goto_main :
 	'''
 	global arr_quadruples
-	arr_quadruples[0]=('GOTO',None,None,len(arr_quadruples)+1)
+	arr_quadruples[0]=('GOTO',None,None,len(arr_quadruples))
 
 def p_main_aux(p):
 	'''
@@ -430,26 +430,18 @@ def p_punto_pop_or(p):
 			op1 = stack_operands.pop() # memory dir
 			op2 = stack_operands.pop()
 
-			aux_1 = semantic_var.get_value_variable(scope,op1) # value
-			aux_2 = semantic_var.get_value_variable(scope, op2)
-			
 			type_1 = stack_type.pop()
 			type_2 = stack_type.pop()
-			
-			#todo: checar tipos
-			if type_1 == 4 and type_2 == 4:
+			value_type = cube.get_type(type_1, type_2, top)
+
+			if value_type != 5:
 				# 1 memory dir : scope, 'bool', temp
 				dir_memory_aux = memory.get_value_memory(4, scope, True, False)
-				value = False
-
-				# 2 hacer la operacion para sacar value
-				# true or false value = true
-				value = aux_2 or aux_1
-
-				# 3 agregar esa direccion de memoria a _global variables temp 
-				semantic_var.add_variables(4, scope, 'temp_variable', None, value, dir_memory_aux, 0)
+		
+				# 2 agregar esa direccion de memoria a _global variables temp 
+				semantic_var.add_variables(4, scope, 'temp_variable', None, None, dir_memory_aux, 0)
 				
-				# 4 crear cuadruplo = (or false true memory_dir)
+				# 3 crear cuadruplo = (or false true memory_dir)
 
 				q = Quadruple(top, op2, op1, dir_memory_aux)
 				arr_quadruples.append(q.get_quadruple())
@@ -491,27 +483,18 @@ def p_pop_and(p):
 			op1 = stack_operands.pop() # memory dir
 			op2 = stack_operands.pop()
 
-			aux_1 = semantic_var.get_value_variable(scope,op1) # value
-			aux_2 = semantic_var.get_value_variable(scope,op2)
-			
 			type_1 = stack_type.pop()
 			type_2 = stack_type.pop()
 			
+			value_type = cube.get_type(type_1, type_2, top)
 			#todo: checar tipos
-			if type_1 == 4 and type_2 == 4:
+			if value_type != 5:
 				# 1 memory dir : scope, 'bool', temp
 				dir_memory_aux = memory.get_value_memory(4, scope, True, False)
-				value = False
-
-				# 2 hacer la operacion para sacar value
-				# true and false value = true
-				value = aux_2 and aux_1
 
 				# 3 agregar esa direccion de memoria a _global variables temp 
-				semantic_var.add_variables(4, scope, 'temp_variable', None, value, dir_memory_aux, 0)
+				semantic_var.add_variables(4, scope, 'temp_variable', None, None, dir_memory_aux, 0)
 				
-				# 4 crear cuadruplo = (and false true memory_dir)
-
 				q = Quadruple(top, op2, op1, dir_memory_aux)
 				arr_quadruples.append(q.get_quadruple())
 				stack_operands.append(dir_memory_aux)
@@ -552,44 +535,28 @@ def p_punto_pop_relacional(p):
 	punto_pop_relacional :
 	'''
 	global stack_operators, arr_quadruples, stack_type,stack_operands
-
-	if len(stack_operators) != 0:
-		top = stack_operators.pop()
+	top = stack_operators.pop()
+	if top == '>' or top == '<' or top == '>=' or top == '<=' or top == '==' or top =='<>':
 
 		op1 = stack_operands.pop() # 9 - dir
 		op2 = stack_operands.pop() # aglobal - dir
 
-		aux_1 = semantic_var.get_value_variable(scope,op1) # value
-		aux_2 = semantic_var.get_value_variable(scope, op2)  # aglobal
-
 		type_1 = stack_type.pop()
 		type_2 = stack_type.pop()
 
-		dir_memory_aux = memory.get_value_memory(4, scope, True, False)
-		value = False
-		if (top == '=='):
-			value = aux_2 == aux_1
-		elif top == '>':
-			value = aux_2 > aux_1		
-		elif top == '<':
-			value = aux_2 < aux_1
-		elif top == '<=':
-			value = aux_2 <= aux_1
-		elif top == '>=':
-			value = aux_2 >= aux_1
-		elif top == '<>':
-			value = aux_2 != aux_1
-		else:
-			value = False
-		
-		semantic_var.add_variables(4, scope, 'temp_variable', None,  value, dir_memory_aux, 0)
-			
+		value_type = cube.get_type(type_1, type_2, top)
 
-		q = Quadruple(top, op2, op1, dir_memory_aux)
-		arr_quadruples.append(q.get_quadruple())
-		stack_operands.append(dir_memory_aux)
-		stack_type.append(4)
-		
+		if value_type != 5:
+			dir_memory_aux = memory.get_value_memory(4, scope, True, False)
+			semantic_var.add_variables(4, scope, 'temp_variable', None,  None, dir_memory_aux, 0)
+				
+			q = Quadruple(top, op2, op1, dir_memory_aux)
+			arr_quadruples.append(q.get_quadruple())
+			stack_operands.append(dir_memory_aux)
+			stack_type.append(4)
+		else:
+			stack_operators.append(top)
+			
 def p_m_exp(p):
 	'''
 	m_exp : termino punto_mexp_pop
@@ -613,9 +580,6 @@ def p_punto_mexp_pop(p):
 			
 			op1 = stack_operands.pop()
 			op2 = stack_operands.pop()
-			
-			aux_1 = semantic_var.get_value_variable(scope, op1) # value
-			aux_2 = semantic_var.get_value_variable(scope,op2)
 
 			type_aux_1 = stack_type.pop()
 			type_aux_2 = stack_type.pop()
@@ -627,13 +591,8 @@ def p_punto_mexp_pop(p):
 				print("error en tipo de suma & resta")
 			else:
 				dir_memory_aux = memory.get_value_memory(value_type, scope, True, False)
-			
-				if top == '+':
-					value = aux_2 + aux_1
-				else:
-					value = aux_2 - aux_1
 				
-				semantic_var.add_variables(value_type, scope, 'temp_variable', None, value, dir_memory_aux, 0)
+				semantic_var.add_variables(value_type, scope, 'temp_variable', None, None, dir_memory_aux, 0)
 
 				q = Quadruple(top, op2, op1, dir_memory_aux )
 				arr_quadruples.append(q.get_quadruple())
@@ -683,9 +642,6 @@ def p_punto_termino_pop(p):
 			op1 = stack_operands.pop()
 			op2 = stack_operands.pop()
 			
-			aux_1 = semantic_var.get_value_variable(scope, op1) # value
-			aux_2 = semantic_var.get_value_variable(scope, op2)
-			
 			type_aux_1 = stack_type.pop()
 			type_aux_2 = stack_type.pop()
 			
@@ -693,16 +649,10 @@ def p_punto_termino_pop(p):
 
 			if value_type == 5:
 				#todo: error
-				print("error en tipo de suma & resta")
+				print("error en multiplicacion y división")
 			else:
 				dir_memory_aux = memory.get_value_memory(value_type, scope, True, False)
-			
-				if top == '*':
-					value = aux_2 * aux_1
-				else:
-					value = aux_2 / aux_1
-				
-				semantic_var.add_variables(value_type, scope, 'temp_variable', None, value, dir_memory_aux, 0)
+				semantic_var.add_variables(value_type, scope, 'temp_variable', None, None, dir_memory_aux, 0)
 
 				q = Quadruple(top, op2, op1, dir_memory_aux )
 				arr_quadruples.append(q.get_quadruple())
@@ -729,12 +679,24 @@ def p_punto_termino_aux(p):
 def p_factor(p):
 	'''
 	factor : cte
-					| ID LEFT_PAR dec_var RIGHT_PAR
-					| ID LEFT_PAR RIGHT_PAR
-					| LEFT_PAR exp_or RIGHT_PAR
+				 | LEFT_PAR punto_fondo_falso exp_or RIGHT_PAR punto_fin_fondo_falso
 	'''
 	p[0] = p[1]
+def p_punto_fondo_falso(p):
+	'''
+	punto_fondo_falso :
+	'''
+	global stack_operators
+	stack_operators.append('(')
 
+
+def p_punto_fin_fondo_falso(p):
+	'''
+	punto_fin_fondo_falso :
+	'''
+	global stack_operators
+	stack_operators.pop()
+	print("sacó fondo falso aaaa")
 
 def p_relacionales(p):
 	'''
@@ -822,14 +784,15 @@ def p_punto_asignacion(p):
 			op = stack_operators.pop()
 
 			ty1= stack_type.pop()
-			ty2= stack_type.pop()
+			ty2 = stack_type.pop()
 			
-			value_aux = semantic_var.get_value_variable(scope, elem)
-			## checar el tipo de variable antes de asignar
-			semantic_var.set_value(scope, izq, elem)
+			value_type = cube.get_type(ty1, ty2, op)
 			
-			q = Quadruple(op, elem, None, izq)
-			arr_quadruples.append(q.get_quadruple())
+			if value_type == 5:
+				print("error en asignacion, type mismatch")
+			else:			
+				q = Quadruple(op, elem, None, izq)
+				arr_quadruples.append(q.get_quadruple())
 
 def p_llamada(p):
 	'''
@@ -997,8 +960,8 @@ def p_punto_add_write_operand(p):
 
 def p_decision(p):
 	'''
-	decision : IF LEFT_PAR exp_or RIGHT_PAR punto_if_exp THEN LEFT_CURL estatutos RIGHT_CURL punto_end_if 
-						| IF LEFT_PAR exp_or RIGHT_PAR punto_if_exp THEN LEFT_CURL estatutos RIGHT_CURL ELSE punto_else LEFT_CURL estatutos RIGHT_CURL punto_end_if
+	decision : IF LEFT_PAR exp_or RIGHT_PAR punto_if_exp LEFT_CURL estatutos RIGHT_CURL punto_end_if 
+						| IF LEFT_PAR exp_or RIGHT_PAR punto_if_exp  LEFT_CURL estatutos RIGHT_CURL ELSE punto_else LEFT_CURL estatutos RIGHT_CURL punto_end_if
 	'''
 def p_punto_if_exp(p):
 	'''
@@ -1090,12 +1053,18 @@ def p_punto_exp_for_sup(p):
 		exp = stack_operands.pop()
 		#checar memory dir
 		vFinal = exp
-		# imitar proceso de asignacion 
-		q1= Quadruple('=', exp, None, 'VFinal')
+		# imitar proceso de asignacion
+		memory_dir_vfinal = None
+		if return_type == 1:
+			memory_dir_vfinal = memory.get_value_memory(1, scope, True, False)
+		elif return_type == 2:
+			memory_dir_vfinal = memory.get_value_memory(2, scope, True, False)
+
+		q1= Quadruple('=', exp, None, memory_dir_vfinal)
 		arr_quadruples.append(q1.get_quadruple())
 		memory_dir = memory.get_value_memory(4, scope, True, False)
 		
-		q2 = Quadruple('<',vControl,vFinal, memory_dir)
+		q2 = Quadruple('<',vControl, memory_dir_vfinal, memory_dir)
 		arr_quadruples.append(q2.get_quadruple())
 		#checar para hacer push del contador
 		stack_jumps.append(len(arr_quadruples) -1)
@@ -1110,14 +1079,14 @@ def p_punto_end_for (p):
 	# imitar proceso 
 	global stack_jumps, arr_quadruples
 	
-	memory_dir = memory.get_value_memory(1, scope, True, False)
-	
-	q = Quadruple('+',vControl,1,memory_dir)
+	memory_dir_p1 = memory.get_value_memory(1, scope, True, True)
+	semantic_var.add_constant_variables(1, scope, 'const_variable', 1, memory_dir_p1, 0)
+	q = Quadruple('+',vControl,memory_dir_p1,vControl)
 	arr_quadruples.append(q.get_quadruple())
 	
 	end = stack_jumps.pop()
 	ret = stack_jumps.pop()
-	q = Quadruple('Goto', None, None, ret)
+	q = Quadruple('GOTO', None, None, ret)
 	arr_quadruples.append(q.get_quadruple())
 	
 	fill(end,len(arr_quadruples))
@@ -1260,7 +1229,7 @@ def parser():
 			global arr_quadruples, stack_operands, semantic_var
 			
 			for index, value in enumerate(arr_quadruples):
-				print(index + 1, value, file=open("output_quadruples-1.txt", "a"))
+				print(index, value, file=open("output_quadruples-1.txt", "a"))
 			return "apropiado"
 
 

@@ -200,28 +200,28 @@ class Semantics:
 		elif memory_dir in self._global['functions'][scope]['variables']:
 			return self._global['functions'][scope]['variables'][memory_dir]['return_type']
 
-	def get_name_variable(self, memory_dir, scope):
-		if memory_dir in self._global['functions'][scope]['variables']:
-			return self._global['functions'][scope]['variables'][memory_dir]['name']			
-		elif memory_dir in self._global['global_var']:
+	def get_name_variable(self, memory_dir, scope):	
+		if memory_dir in self._global['global_var']:
 			return self._global['global_var'][memory_dir]['name']
-	
+		elif memory_dir in self._global['functions'][scope]['variables']:
+			return self._global['functions'][scope]['variables'][memory_dir]['name']
+			
 	def get_value_variable(self, scope, memory_dir):
-		if memory_dir in self._global['functions'][scope]['variables']:
-			return self._global['functions'][scope]['variables'][memory_dir]['value']	
-		elif  memory_dir in self._global['global_var']:
+		if  memory_dir in self._global['global_var']:
 			return self._global['global_var'][memory_dir]['value']
-	
+		elif memory_dir in self._global['functions'][scope]['variables']:
+			return self._global['functions'][scope]['variables'][memory_dir]['value']
+			
 	def set_value(self, scope, memory_dir, value):
-		if memory_dir in self._global['functions'][scope]['variables']:
-			self._global['functions'][scope]['variables'][memory_dir]['value'] = value	
-		elif memory_dir in self._global['global_var']:
+		if memory_dir in self._global['global_var']:
 			self._global['global_var'][memory_dir]['value'] = value
+		elif memory_dir in self._global['functions'][scope]['variables']:
+			self._global['functions'][scope]['variables'][memory_dir]['value'] = value	
 
 	def add_variable_name(self, scope, memory_dir, name):
-		if memory_dir in self._global['functions'][scope]['variables']:
-			self._global['functions'][scope]['variables'][memory_dir]['name'] = name	
-		elif memory_dir in self._global['global_var']:
+		if memory_dir in self._global['global_var']:
 			self._global['global_var'][memory_dir]['name'] = name
+		elif memory_dir in self._global['functions'][scope]['variables']:
+			self._global['functions'][scope]['variables'][memory_dir]['name'] = name	
 
 	#hacer funcion get param_types de la funcion

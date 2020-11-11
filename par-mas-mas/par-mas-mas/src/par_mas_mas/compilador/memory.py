@@ -244,13 +244,12 @@ class Memory:
 					
 		elif return_type == 4:
 			if scope != "global":
-				if temp:
-					return self.add_bool_temp()
-				else:
-					return self.add_bool_local_temp()
+				return self.add_bool_local_temp()
+			else:
+				return self.add_bool_temp()
 		
 		elif return_type == 6:
-			if scope != "global" and const:
+			if const:
 				return self.add_string_constante()
 				
 
