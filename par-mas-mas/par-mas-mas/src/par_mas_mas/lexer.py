@@ -174,7 +174,8 @@ def p_punto_goto_main(p):
 	'''
 	punto_goto_main :
 	'''
-	global arr_quadruples
+	global arr_quadruples, scope
+	scope = 'main'
 	arr_quadruples[0]=('GOTO',None,None,len(arr_quadruples))
 
 def p_main_aux(p):
@@ -281,7 +282,7 @@ def p_punto_verify_dec_param(p):
 	if param_type != param_1_type:
 		print("Error: el tipo de parametro no coinicide con el indicado")
 	else:
-		q = Quadruple('param', param_1, None, 'param' + str(k + 1))
+		q = Quadruple('PARAM', param_1, None, k)
 		arr_quadruples.append(q.get_quadruple())
 	
 def p_funciones(p):
@@ -325,7 +326,6 @@ def p_punto_end_function_return(p):
 	
 	q = Quadruple('ENDFUNC',None,None,None)
 	arr_quadruples.append(q.get_quadruple())
-	
 	
 	semantic_var.remove_local_function(scope)
 	memory.reset_local_temp()
@@ -407,6 +407,8 @@ def p_end_func(p):
 	
 	q = Quadruple('ENDFUNC',None,None,None)
 	arr_quadruples.append(q.get_quadruple())
+	memory.reset_local_temp()
+	memory.reset_dir_local()
 	semantic_var.remove_local_function(scope)
 	scope = 'global'
 
@@ -832,7 +834,7 @@ def p_punto_era(p):
 	global k, arr_quadruples, func_name
 	q = Quadruple('ERA', None,None,p[-3])
 	arr_quadruples.append(q.get_quadruple())
-	k=0
+	k = 0
 	func_name = p[-3]
 
 	
@@ -849,7 +851,7 @@ def p_punto_return(p):
 	value = stack_operands.pop()
 	stack_type.pop()
 	semantic_var.add_function_return_value(scope, value)
-	q = Quadruple('=', value, None, scope)
+	q = Quadruple('RETURN', None, None, value)
 	arr_quadruples.append(q.get_quadruple())
 
 def p_punto_read_stack(p):

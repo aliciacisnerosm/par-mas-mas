@@ -11,22 +11,33 @@ void func prueba(int a, char t){
     write(a);
     variablefloat = 1234.909;
     aglobal = 2;
+
+}
+int func pruebatipo(int z, int n){
+  if (z < 115){
+    z = z + 1;
+    pruebatipo(z,0);
+  };
+  write("hoal");
 }
 
-void func pruebatipo(int m, int n){
-  var float: z;
-  z = 10 +(20*5+2/(1+1));
-
-  write("funcion de tipo entero");
+void func cuenta_regresiva(int n){
+  n=n-1;
+  if(n>0){
+    write(n);
+  
+  }
+  else{
+    write("boom!, fin de la funcion");
+  };
+  
 }
-
-
 void func shalalala(int param1, int param2){
   var int: y, variablelocal;
-  y =10;
+  y =2;
   variablelocal = 20;
   if(y<5){
-    write("hola","hola 2", 5 * 9.7  );
+    write("hola","hola 2", 5 * 9.7);
   }
   else{
     write("y es mayor a 5");
@@ -39,11 +50,9 @@ void func shalalala(int param1, int param2){
 main (){
   variablefloat = 7.5;
   read(variablefloat);
-  aglobal = 2;
-  bglobal=9;
- 
-for (x = 2 to 5){
-  write("estoy adentro del for");
-};
-write("ultimo  cuadruplo");
+  aglobal = 1;
+  bglobal=111;
+
+pruebatipo(bglobal, 0);
+shalalala(aglobal,bglobal);
 }

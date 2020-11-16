@@ -18,6 +18,7 @@ class Semantics:
 				}
 			},
 			'functions_id_return_values': dict()
+		
 	}
 
 		
@@ -125,6 +126,11 @@ class Semantics:
 	def add_function_return_value(self, name, value):
 		self._global['functions_id_return_values'][name] = value
 	# agrega variables temporales
+
+	def get_function_return_type(self, name):
+		print()
+		return self._global['functions'][name]['return_type']
+		
 
 	def add_variables(self, return_type, scope, kind, name, value, memory_dir, dimension):
 		if scope == 'global':

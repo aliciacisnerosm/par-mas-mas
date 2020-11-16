@@ -1,0 +1,1 @@
+4 {18001: {'value': '"hola"'}, 18002: {'value': '"hoal"'}, 18003: {'value': '"boom!, fin de la funcion"'}, 18004: {'value': '"hola"'}, 18005: {'value': '"hola 2"'}, 18006: {'value': '"y es mayor a 5"'}}
